@@ -6,10 +6,11 @@ Projeto integrador focado no desenvolvimento de uma aplicação full-stack para 
 
 ## 1. Status do Projeto
 
-> **Fase Atual:** Fase 1 / Início da Fase 2 (Estruturação de Ambiente, Repositório e Definição de Escopo).  
+> **Fase Atual:** Fase 2 (Prototipagem, Definição de Arquitetura e Entrega Parcial).  
 > **Backend:** Estrutura base gerada com Spring Boot 3 na porta `8080`.  
 > **Frontend:** Estrutura de pastas inicializada.  
-> **Banco de Dados:** Modelagem relacional definida; scripts e entidades em andamento.
+> **Banco de Dados:** Modelagem relacional definida; entidades e persistência em andamento.  
+> **Controle de Versão:** Repositório configurado e sincronizado no GitLab.
 
 ---
 
@@ -25,7 +26,7 @@ A aplicação resolve a organização de listas de filmes compartilhadas entre c
 
 ---
 
-## 3. Planejamento de Arquitetura
+## 3. Definição de Arquitetura
 
 O sistema adota uma arquitetura em camadas desacoplada:
 
@@ -42,3 +43,53 @@ cineclube-app/
 ├── frontend/         # Cliente React.js
 ├── docs/             # Diagramas e documentações auxiliares
 └── README.md         # Acompanhamento do projeto
+```
+
+---
+
+## 4. Prototipagem e Contratos da API (REST)
+
+| Método | Endpoint | Descrição | Status Sucesso | Status Erro |
+| :--- | :--- | :--- | :--- | :--- |
+| `POST` | `/api/v1/usuarios` | Cadastro de perfil e identificador `@usuario` | `201 Created` | `400 Bad Request` |
+| `POST` | `/api/v1/clubes` | Criação de clube de cinema | `201 Created` | `400 Bad Request` |
+| `POST` | `/api/v1/clubes/{id}/membros` | Adição de membro ao clube por `@usuario` | `200 OK` | `404 Not Found` |
+| `POST` | `/api/v1/clubes/{id}/filmes` | Adição de título à lista de exibição do clube | `201 Created` | `400 Bad Request` |
+| `POST` | `/api/v1/filmes/{id}/avaliacoes` | Registro de nota (1 a 5) e atualização da média | `201 Created` | `400 Bad Request` |
+
+### Regras de Negócio Críticas (Validações no Service)
+* **RN01 (Acesso Restrito):** Apenas membros confirmados do clube podem sugerir títulos e emitir avaliações. Requisições externas são rejeitadas com erro `400`.
+* **RN02 (Unicidade de Nota):** Cada membro pode avaliar uma única vez cada filme listado no clube.
+* **RN03 (Integridade):** Validação de formato obrigatório para `@usuario` e restrição das notas ao intervalo de 1 a 5.
+
+---
+
+## 5. Instruções de Execução e Testes
+
+### Configuração do Repositório Local
+Para clonar e sincronizar com o GitLab:
+```bash
+git clone <URL_DO_REPOSITORIO_GITLAB>
+cd cineclube-app
+```
+
+### Executando o Backend
+Na pasta `backend`:
+```bash
+# Windows
+.\mvnw.cmd spring-boot:run
+
+# Linux / macOS
+./mvnw spring-boot:run
+```
+O servidor estará acessível em `http://localhost:8080`.
+
+### Executando os Testes Automatizados (Entrega Parcial)
+Para validar os testes unitários e de contexto com JUnit:
+```bash
+# Windows
+.\mvnw.cmd test
+
+# Linux / macOS
+./mvnw test
+```
